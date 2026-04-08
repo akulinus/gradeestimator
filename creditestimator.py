@@ -11,7 +11,7 @@ def storeGradeGoal():
     return goal 
 
 def storePassedModules():
-    if module not in st.session_state:
+    if "module" not in st.session_state:
         st.session_state.module = []
 
     # information about new module
@@ -54,19 +54,16 @@ def calculatePassedMedian(passedModules):
     return passedMedian 
 
  
-def calculateneededMedian(gradeGoal, passedModules): 
+def calculateNeededMedian(gradeGoal, passedModules): 
     passedMedian = calculatePassedMedian(passedModules)
     creditSum = calculateCreditSum(passedModules)
     creditsLeft = 180 - creditSum
-
 
     # calculate Median to achieve goal 
     neededMedian = (180 * gradeGoal - creditSum * passedMedian) / creditsLeft
     return neededMedian
 
 
-
-# TODO: Write method that computes acchievability of goal 
 def goalAchievability(neededMedian): 
     match neededMedian: 
         case n if n < 1.0:
@@ -85,12 +82,12 @@ def goalAchievability(neededMedian):
 def main(): 
     passedModules = storePassedModules()
     gradeGoal = storeGradeGoal()
-    passedMedian = calculatePassedMedian(passedModules)
-    neededMedian = neededMedian(passedModules, gradeGoal)
 
-
-    st.write(f"Aktueller Notendurchschnitt: {passedMedian: .2f}")
-    goalAchievability(neededMedian)
+    if passedModules:
+        passedMedian = calculatePassedMedian(passedModules)
+        neededMedian = calculateNeededMedian(gradeGoal, passedModules)
+        st.write(f"Aktueller Notendurchschnitt: {passedMedian:.2f}")
+        goalAchievability(neededMedian)
 
 
 
