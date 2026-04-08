@@ -30,11 +30,14 @@ cd creditestimator
 pip install streamlit
 ```
 
-### Run the App
+### Run the App in your terminal
 
 ```bash
 streamlit run creditestimator.py
 ```
+
+### Alternative: Run the App through URL 
+[Gradeestimator](https://gradeestimator-by9i7wle9basxwbesvazdp.streamlit.app/)
 
 ---
 
