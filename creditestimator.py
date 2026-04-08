@@ -3,29 +3,28 @@
 # Output: grade so far and overall grade needed to achieve goal 
 # ///
 
-import streamlit as st    #GUI 
+import streamlit as st    
 
-
-# TODO: Write method that stores given User informations 
+# UI Functions 
 def storeGradeGoal(): 
     goal = st.number_input("Zielschnitt", 1.0, 4.0)
+    return goal 
 
 def storePassedModules():
-    # initialize Stored Modules in Dynamic List
-    if "module" not in st.session_state:
+    if module not in st.session_state:
         st.session_state.module = []
 
     # information about new module
-    module = st.text_input("Name des Moduls")
-    ects = st.number_input("ECTS", 1, 30)        # minimal 1, maximal 30 Credits
-    note = st.number_input("Note", 1.0, 4.0)     # minimal 1.0, maximal 4.0
+    module = st.text_input("Name des Moduls", key="module_input")
+    ects = st.number_input("ECTS", 1, 30, key="ects_input")      
+    grade = st.number_input("Note", 1.0, 4.0, key="grade_input")   
 
     # Add new Module - Button
     if st.button("Modul hinzufügen"):
         st.session_state.module.append({
             "Modulname": module,
             "ECTS": ects,
-            "Note": note
+            "Note": grade
         })
 
     # Show List
@@ -34,9 +33,7 @@ def storePassedModules():
     return st.session_state.module      
 
 
-# TODO: Write method that calculates median of examined subjects 
-
-
+# calculations 
 def calculateModuleSum(passedModules):
     # calculate ECTS and grade
     modulesSum = 0
@@ -52,26 +49,19 @@ def calculateCreditSum(passedModules):
     return ectsSum
 
 def calculatePassedMedian(passedModules): 
-    # set passedModules
-    passedModules = storePassedModules()
     #calculate median 
-    passedMedian = calculateModuleSum / calculateCreditSum
+    passedMedian = calculateModuleSum(passedModules) / calculateCreditSum(passedModules)
     return passedMedian 
 
-
-# TODO: Wrtie method that calculates median of future grades to achieve goal 
-def neededMedian(gradeGoal, passedModules): 
-    # set passedModules and gradeGoal 
-    passedModules = storePassedModules(passedModules)
-    gradeGoal = storeGradeGoal(passedModules)
+ 
+def calculateneededMedian(gradeGoal, passedModules): 
     passedMedian = calculatePassedMedian(passedModules)
-    moduleSum = calculateModuleSum(passedModules)
     creditSum = calculateCreditSum(passedModules)
     creditsLeft = 180 - creditSum
 
 
     # calculate Median to achieve goal 
-    neededMedian = (creditSum * passedMedian - 180 * gradeGoal) / creditsLeft
+    neededMedian = (180 * gradeGoal - creditSum * passedMedian) / creditsLeft
     return neededMedian
 
 
@@ -91,7 +81,7 @@ def goalAchievability(neededMedian):
             st.write(f"Ziel bereits erreicht. Benötigter Durchschnitt: {neededMedian:.2f}")
 
 
-
+# Main-Methode 
 def main(): 
     passedModules = storePassedModules()
     gradeGoal = storeGradeGoal()
@@ -100,7 +90,7 @@ def main():
 
 
     st.write(f"Aktueller Notendurchschnitt: {passedMedian: .2f}")
-    st.write(f"Erreichbarkeit des Zielschnittes: {goalAchievability(neededMedian): .2f}")
+    goalAchievability(neededMedian)
 
 
 
