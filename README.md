@@ -1,4 +1,4 @@
-# What ist Gradeestimator ?
+# What is the Gradeestimator ?
 
 This is a Streamlit app that calculates the average grade needed in remaining modules to hit a selected target grade.
 
