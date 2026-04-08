@@ -29,8 +29,9 @@ def storePassedModules():
         })
 
     # Show List
-    for module in st.session_state.module:
-        st.write(f"{module['Modulname']} – {module['ECTS']} ECTS – Note {module['Note']}")
+    for modul in st.session_state.module:
+        st.write(f"{modul['Modulname']} – {modul['ECTS']} ECTS – Note {modul['Note']}")   
+    return st.session_state.module      
 
 
 # TODO: Write method that calculates median of examined subjects 
@@ -38,12 +39,14 @@ def storePassedModules():
 
 def calculateModuleSum(passedModules):
     # calculate ECTS and grade
+    modulesSum = 0
     for module in passedModules: 
         modulesSum += module['ECTS'] * module['Note']
     return modulesSum
 
 def calculateCreditSum(passedModules):
     # calculate ECTS 
+    ectsSum = 0
     for module in passedModules: 
         ectsSum += module['ECTS']
     return ectsSum
@@ -59,35 +62,46 @@ def calculatePassedMedian(passedModules):
 # TODO: Wrtie method that calculates median of future grades to achieve goal 
 def neededMedian(gradeGoal, passedModules): 
     # set passedModules and gradeGoal 
-    passedModules = storePassedModules()
-    gradeGoal = storeGradeGoal()
-    passedMedian = calculatePassedMedian()
-    moduleSum = calculateModuleSum()
-    creditSum = calculateCreditSum()
+    passedModules = storePassedModules(passedModules)
+    gradeGoal = storeGradeGoal(passedModules)
+    passedMedian = calculatePassedMedian(passedModules)
+    moduleSum = calculateModuleSum(passedModules)
+    creditSum = calculateCreditSum(passedModules)
     creditsLeft = 180 - creditSum
 
 
     # calculate Median to achieve goal 
     neededMedian = (creditSum * passedMedian - 180 * gradeGoal) / creditsLeft
+    return neededMedian
 
 
 
 # TODO: Write method that computes acchievability of goal 
-def goalAchievability(neededMedian, passedMedian): 
+def goalAchievability(neededMedian): 
     match neededMedian: 
         case n if n < 1.0:
-            print("Ziel nicht erreichbar.")
+            st.write(f"Ziel nicht erreichbar. Benötigter Durchschnitt: {neededMedian:.2f}")
         case n if n <= 1.7:
-            print(f"Ziel unwahrscheinlich erreichbar. Benötigter Durchschnitt in Zukunft ist {neededMedian}")
+            st.write(f"Ziel schwer erreichbar. Benötigter Durchschnitt: {neededMedian:.2f}")
         case n if n <= 2.5: 
-            print(f"Ziel wahrscheinlich erreichbar. Benötigter Durchschnitt in Zukunft ist {neededMedian}")
+            st.write(f"Ziel machbar erreichbar. Benötigter Durchschnitt: {neededMedian:.2f}")
         case n if n <= 4.0: 
-            print(f"Ziel sehr wahrscheinlich erreichbar. Benötigter Durchschnitt in Zukunft ist {neededMedian}")
-        case n if n > 4.0: 
-            print(f"Ziel ist bereits erreicht.")
-
-
-    
+            st.write(f"Ziel sehr gut erreichbar. Benötigter Durchschnitt: {neededMedian:.2f}")
+        case _: 
+            st.write(f"Ziel bereits erreicht. Benötigter Durchschnitt: {neededMedian:.2f}")
 
 
 
+def main(): 
+    passedModules = storePassedModules()
+    gradeGoal = storeGradeGoal()
+    passedMedian = calculatePassedMedian(passedModules)
+    neededMedian = neededMedian(passedModules, gradeGoal)
+
+
+    st.write(f"Aktueller Notendurchschnitt: {passedMedian: .2f}")
+    st.write(f"Erreichbarkeit des Zielschnittes: {goalAchievability(neededMedian): .2f}")
+
+
+
+main()
