@@ -79,8 +79,20 @@ creditestimator/
 
 ---
 
-## Tests 
-- to be added
+## Tests (None yet, to be added)
+- validate calculations
+- validate input
+- validate output 
 
-## Extensions 
-- to be added 
+## Updates in Progress
+- upload pdf-file of ToR and let it add your modules automatically
+- instead of 180 ECTS, let user add amount of ECTS in degree
+- let user customize grade scala
+- let user store averade of passed Modules and play around with different scenarios for new modules instead of having to reenter passed Modules everytime
+- change achievability assesment based off users assesment of achievability
+- change achievability assesment based off median of passed grades
+- let user add and store to be passed modules and their credits
+- let user estimate to be passed modules and their grades realistically
+- let grade not be incremented and decremented by 0.01 by button but by scale
+- let user be able to delete and change passed modules
+- let user be able to refresh app witout losing all implemented data 
